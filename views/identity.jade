@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1= title
+  p Identify #{title}
+  form(method='get' action='/users/identity/')
+    input(type="text" placeholde="site" name="domain_name" value="ohri.ca")
+    input(type='submit')

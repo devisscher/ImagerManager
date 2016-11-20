@@ -1,0 +1,43 @@
+extends layout
+block content
+    .row.text-center(style="height:500px;")
+        div(style="height:500px; background-image: url(#{file});background-size: 50%;background-repeat: no-repeat;background-position: 50% 50%;")
+        form.form-horizontal
+            .form-group
+                textarea(class="js-copytextarea form-control") [file](#{file})
+            .form-group
+                button(class="js-textareacopybtn btn pull-right" style="width:150px;") Copy Markdown
+            .form-group 
+                textarea(class="js-copytextarea1 form-control") &lt;img src=&quot;#{file}&quot; /&gt;
+            .form-group
+                button(class="js-textareacopybtn1 btn pull-right" style="width:150px;") Copy HTML
+    script.
+        var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
+
+        copyTextareaBtn.addEventListener('click', function(event) {
+            event.preventDefault()
+        var copyTextarea = document.querySelector('.js-copytextarea');
+        copyTextarea.select();
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        });
+        var copyTextareaBtn1 = document.querySelector('.js-textareacopybtn1');
+
+        copyTextareaBtn1.addEventListener('click', function(event) {
+            event.preventDefault()
+        var copyTextarea1 = document.querySelector('.js-copytextarea1');
+        copyTextarea1.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        });

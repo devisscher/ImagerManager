@@ -1,0 +1,98 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}, you are logged into <span style="color:blue;">#{team}</span> assets page. 
+    a(href="/destroy_session") Click here 
+    | to change teams.
+  .row
+    .container 
+      form(method='post' action='/' enctype="multipart/form-data" class="form-inline")
+        .form-goup
+          input( type='file' name='fileUploaded' class="form-control")
+          input(type="text" placeholde="site" name="filename" value="ohri.ca" hidden)
+          input(type='submit' class="btn btn-primary")
+  .row
+    .col-lg-12
+      h1.page-header <span style="color:blue;">#{team}</span> Images
+      if files
+        for file in files
+          div.col-md-4
+            a(href='!#' id="img#{file.replace('.jpg' || '.png','')}" class="img_thumb" data-overlay="#overlay#{file.replace('.jpg' || '.png','')}")
+              div(style="display:flex; height:200px; background-image: url(/images/#{team}/#{file});background-size: cover;background-repeat: no-repeat;background-position: 50% 50%;")
+            span.overlay(id="overlay#{file.replace('.jpg' || '.png','')}")  
+              a(href='/image/#{file}' class="edit_link overlay-btn")
+                img(class="overlay-icon" src="/images/edit.png")
+              a(href="#"  class="html_link overlay-btn" onclick="copyToClipboard('#txthtml#{file.replace('.jpg' || '.png','')}')")
+                img(class="overlay-icon"  src="/images/html.png")
+              a(href="#" class="md_link overlay-btn" onclick="copyToClipboard('#txt#{file.replace('.jpg' || '.png','')}')")
+                img(class="overlay-icon" src="/images/markdown.png") 
+              input(value="[file](http://localhost:3000/images/#{team}/#{file})" id="txt#{file.replace('.jpg' || '.png','')}" hidden)
+              textarea(id="txthtml#{file.replace('.jpg' || '.png','')}" hidden) &lt;img src=&quot;http://localhost:3000/images/#{team}/#{file}&quot; /&gt; 
+              script.
+                function copyToClipboard(element) {
+                    var $temp = $('<input>');
+                    $("body").append($temp);
+                    console.log(element)
+                    $temp.val($(element).val()).select();
+                    document.execCommand("copy");
+                    $temp.remove();
+                    //element.preventDefault();
+                }              
+
+  hr
+  footer
+    .row
+      .col-lg-12
+        p Copyright © tdevisscher.ca 2016
+  script(src='https://code.jquery.com/jquery-3.1.1.min.js')
+  script.
+    $(document).ready(function(){
+      $(".overlay").addClass("hide");
+      $(".img_thumb").on('click', function (e) {
+        $(".overlay").addClass("hide");
+          $($(this).data('overlay')).removeClass("hide");
+          e.preventDefault()
+      });
+      $(".img_thumb").on('mouseenter', function (e) {
+        $(".overlay").addClass("hide");
+          $($(this).data('overlay')).removeClass("hide");
+          e.preventDefault()
+      });
+      $(".overlay").on('mouseleave', function (e) {
+        $(".overlay").addClass("hide");
+          e.preventDefault()
+      });
+    })
+    //- $(document).ready(function(){
+    //-   var md_link;
+    //-   var html_link;
+    //-   var url;
+      
+    //-   $(".img_thumb").on('click', function (e) {
+    //-     var that = this;
+    //-     console.log("appending")
+    //-     url = $(this).data('img');
+    //-     let html_copy_target = $(that).data('id');
+    //-     let md_copy_target = $(that).data('mdid');  
+    //-     console.log("1." + html_copy_target + " 2." + md_copy_target)
+    //-     $(this).append('<span class="overlay text-center"><div class="overlay-inner img_thumb_exit">' +
+    //-                     '<a href=' + url + ' class="edit_link overlay-btn"><img class="overlay-icon" src="/images/edit.png" /></a>' +
+    //-                     '<a href="#"  class="html_link overlay-btn" onclick="copyToClipboard("#'+ html_copy_target +'")"><img class="overlay-icon"  src="/images/html.png" /></a>'+
+    //-                     '<a href="" class="md_link overlay-btn" onclick="copyToClipboard("#'+ md_copy_target +'")"><img class="overlay-icon" src="/images/markdown.png" /></a></span>')
+    //-                     e.preventDefault()
+    //-   });
+        //- $(".img_thumb").on('mouseleave', function (e) {
+        //-   e.preventDefault()
+        //-   $('.overlay').remove();
+        //- });
+
+      //- $(".img_thumb").on('click', function (e) {
+      //-     e.clipboardData.setData('text/plain', 'Hello, world!');
+      //-     e.preventDefault()
+      //-   });
+    //- $('body').click(function (e) {
+        
+    //- })
+    //- });
+
