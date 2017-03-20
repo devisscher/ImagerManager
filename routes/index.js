@@ -136,6 +136,64 @@ router.post('/', function(req, res) {
 
     });
 });
+router.post('/upload', function(req, res) {
+    req.pipe(req.busboy);
+    req.busboy.on('file', function(fieldname, file, filename) {
+        var ext = path.extname(filename).toLowerCase();
+        var team = "snaphole";
+        if (directoryExists('/home/img.tdevisscher.ca/public/images/' + team)) {
+            //var myFilename = convertToSlug(filename)
+            var myFilename = guid()
+            var fstream = fs.createWriteStream('/home/img.tdevisscher.ca/public/images/' + team + "/" + myFilename + ext);
+            file.pipe(fstream);
+            fstream.on('close', function() {
+                sharp('/home/img.tdevisscher.ca/public/images/' + team + '/' + myFilename + ext).resize(300, 200).toFile('/home/img.tdevisscher.ca/public/images/' + team + "/" + myFilename + '_300x200' + ext, function(err) {
+                    // output.jpg is a 300 pixels wide and 200 pixels high image
+                    // containing a scaled and cropped version of input.jpg
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        sharp('/home/img.tdevisscher.ca/public/images/' + team + '/' + myFilename + ext).resize(1920, 1080).toFile('/home/img.tdevisscher.ca/public/images/' + team + "/" + myFilename + '_1920x1080' + ext, function(err) {
+                            // output.jpg is a 300 pixels wide and 200 pixels high image
+                            // containing a scaled and cropped version of input.jpg
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log("Success")
+                                res.redirect('/');
+                            }
+
+                        });
+                    }
+
+                });
+
+            });
+        } else {
+            //var myFilename = convertToSlug(filename)
+            var myFilename = guid()
+            fs.mkdirSync('/home/img.tdevisscher.ca/public/images/' + team);
+            var fstream = fs.createWriteStream('/home/img.tdevisscher.ca/public/images/' + team + "/" + myFilename + ext);
+            file.pipe(fstream);
+            fstream.on('close', function() {
+
+                sharp('/home/img.tdevisscher.ca/public/images/' + team + '/' + myFilename + ext).resize(300, 200).toFile('/home/img.tdevisscher.ca/public/images/' + team + "/" + myFilename + '_300x200' + ext, function(err) {
+                    // output.jpg is a 300 pixels wide and 200 pixels high image
+                    // containing a scaled and cropped version of input.jpg
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("Success")
+                        res.redirect('/');
+
+                    }
+
+                });
+            });
+        }
+
+    });
+});
 router.get('/image/:file_path', function(req, res, next) {
 
     var myFile = req.params.file_path
