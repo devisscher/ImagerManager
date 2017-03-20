@@ -1,10 +1,10 @@
 extends layout
 block content
     .row.text-center(style="height:500px;")
-        div(style="height:500px; background-image: url(#{file});background-size: 50%;background-repeat: no-repeat;background-position: 50% 50%;")
+        div(style="height:500px; background-image: url(#{img_path});background-size: 50%;background-repeat: no-repeat;background-position: 50% 50%;")
         form.form-horizontal
             .form-group
-                textarea(class="js-copytextarea form-control") [file](#{file})
+                textarea(class="js-copytextarea form-control") ![file](#{file})
             .form-group
                 button(class="js-textareacopybtn btn pull-right" style="width:150px;") Copy Markdown
             .form-group 

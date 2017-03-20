@@ -2,7 +2,8 @@ extends layout
 
 block content
   h1= title
-  p Identify #{title}
+  p Enter your team id.
+  p If you don't have a team, make one up.
   form(method='get' action='/users/identity/')
-    input(type="text" placeholde="site" name="domain_name" value="ohri.ca")
+    input(type="text" placeholde="site" name="domain_name" value="team1")
     input(type='submit')

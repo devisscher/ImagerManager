@@ -4,6 +4,10 @@ var path = require('path');
 var busboy = require('connect-busboy'); //middleware for form/file upload
 var fs = require('fs-extra');
 var path = require('path');
+
+
+var sharp = require('sharp');
+
 var walkSync = function(dir, filelist) {
     var path = path || require('path');
     var fs = fs || require('fs'),
@@ -12,11 +16,12 @@ var walkSync = function(dir, filelist) {
     files.forEach(function(file) {
         if (fs.statSync(path.join(dir, file)).isDirectory()) {
             filelist = walkSync(path.join(dir, file), filelist);
-        } else {
-            if (file.indexOf('.jpg' || '.png') > -1) {
-
+        }
+        else {
+            if (file.indexOf('300x200') > -1) {
                 filelist.push(file);
             }
+
         }
     });
     return filelist;
@@ -36,7 +41,8 @@ function s4() {
 function directoryExists(path) {
     try {
         return fs.statSync(path).isDirectory();
-    } catch (err) {
+    }
+    catch (err) {
         return false;
     }
 }
@@ -49,14 +55,21 @@ function convertToSlug(Text) {
 }
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
     if (req.session.team) {
         var files;
-        if (directoryExists('/Users/tdev/Sites/node/nodeimg/public/images/' + req.session.team)) {
-            files = walkSync("/Users/tdev/Sites/node/nodeimg/public/images/" + req.session.team + "/");
+        if (directoryExists('/home/img.tdevisscher.ca/public/images/' + req.session.team)) {
+            files = walkSync("/home/img.tdevisscher.ca/public/images/" + req.session.team + "/");
         }
         console.log(req.session.id)
-        res.render('index', { title: 'Image Manager', domain: req.session.id, files: files, team: req.session.team });
-    } else {
+        res.render('index', {
+            title: 'Image Manager',
+            domain: req.session.id,
+            files: files,
+            team: req.session.team
+        });
+    }
+    else {
         res.redirect('/users');
     }
 
@@ -64,36 +77,83 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res) {
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
-        var ext = path.extname(filename)
+        var ext = path.extname(filename).toLowerCase();
         var team = req.session.team;
-        if (directoryExists('/Users/tdev/Sites/node/nodeimg/public/images/' + req.session.team)) {
+        if (directoryExists('/home/img.tdevisscher.ca/public/images/' + req.session.team)) {
             //var myFilename = convertToSlug(filename)
             var myFilename = guid()
-            var fstream = fs.createWriteStream('/Users/tdev/Sites/node/nodeimg/public/images/' + req.session.team + "/" + myFilename + ext);
+            var fstream = fs.createWriteStream('/home/img.tdevisscher.ca/public/images/' + req.session.team + "/" + myFilename + ext);
             file.pipe(fstream);
             fstream.on('close', function() {
-                res.redirect('/');
+                sharp('/home/img.tdevisscher.ca/public/images/' + req.session.team + '/' + myFilename + ext).resize(300, 200).toFile('/home/img.tdevisscher.ca/public/images/' + req.session.team + "/" + myFilename + '_300x200' + ext, function(err) {
+                    // output.jpg is a 300 pixels wide and 200 pixels high image
+                    // containing a scaled and cropped version of input.jpg
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        sharp('/home/img.tdevisscher.ca/public/images/' + req.session.team + '/' + myFilename + ext).resize(1920, 1080).toFile('/home/img.tdevisscher.ca/public/images/' + req.session.team + "/" + myFilename + '_1920x1080' + ext, function(err) {
+                            // output.jpg is a 300 pixels wide and 200 pixels high image
+                            // containing a scaled and cropped version of input.jpg
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log("Success")
+                                res.redirect('/');
+                            }
+
+                        });
+                    }
+
+                });
+
             });
-        } else {
+        }
+        else {
             //var myFilename = convertToSlug(filename)
             var myFilename = guid()
-            fs.mkdirSync('/Users/tdev/Sites/node/nodeimg/public/images/' + req.session.team);
-            var fstream = fs.createWriteStream('/Users/tdev/Sites/node/nodeimg/public/images/' + req.session.team + "/" + myFilename + ext);
+            fs.mkdirSync('/home/img.tdevisscher.ca/public/images/' + req.session.team);
+            var fstream = fs.createWriteStream('/home/img.tdevisscher.ca/public/images/' + req.session.team + "/" + myFilename + ext);
             file.pipe(fstream);
             fstream.on('close', function() {
-                res.redirect('/');
+
+                sharp('/home/img.tdevisscher.ca/public/images/' + req.session.team + '/' + myFilename + ext).resize(300, 200).toFile('/home/img.tdevisscher.ca/public/images/' + req.session.team + "/" + myFilename + '_300x200' + ext, function(err) {
+                    // output.jpg is a 300 pixels wide and 200 pixels high image
+                    // containing a scaled and cropped version of input.jpg
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("Success")
+                        res.redirect('/');
+
+                    }
+
+                });
             });
         }
 
     });
 });
 router.get('/image/:file_path', function(req, res, next) {
+
     var myFile = req.params.file_path
     if (req.session.team) {
-        var file = 'http://localhost:3000/images/' + req.session.team + '/' + myFile;
+        var file = '/images/' + req.session.team + '/' + myFile;
+        var img_path = '/images/' + req.session.team + '/' + myFile;
+
+
         console.log(req.session.id)
-        res.render('image', { title: 'Express', domain: req.session.id, file: file, team: req.session.team });
-    } else {
+        res.render('image', {
+            title: 'Image',
+            domain: req.session.id,
+            file: file,
+            img_path: img_path,
+            team: req.session.team
+        });
+    }
+    else {
         res.redirect('/users');
     }
 
@@ -102,10 +162,13 @@ router.get('/destroy_session', function(req, res, next) {
     req.session.destroy(function(err) {
         if (err) {
             console.log(err);
-        } else {
+        }
+        else {
             res.redirect('/');
         }
     })
 
 });
+
+
 module.exports = router;
