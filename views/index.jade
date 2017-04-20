@@ -20,17 +20,17 @@ block content
         if files
           for file in files
               .card(id="img#{file.replace('.jpg' || '.png','')}" class="img_thumb" data-overlay="#overlay#{file.replace('.jpg' || '.png','')}")
-                img.card-img-top(src='/images/#{team}/#{file}', alt='Card image' style=" display: block;width: 100%;height: 100%;object-fit: cover;")
+                img.card-img-top(src='/image_uploads/#{team}/#{file}', alt='Card image' style=" display: block;width: 100%;height: 100%;object-fit: cover;")
                 .card-block
                   p.card-text
-                    a.card-link(href='/image/#{file}')
+                    a.card-link(href="/image/#{file.replace('_300x200','')}")
                       img(class="" src="/images/edit.png"  style="height:30px;width:30px;")
                     a.card-link(href="#"  class="html_link overlay-btn" onclick="copyToClipboard('#txthtml#{file.replace('.jpg' || '.png','')}')")
                       img(class="overlay-icon"  src="/images/html.png"  style="height:30px;width:30px;")
                     a.card-link(href="#" class="md_link overlay-btn" onclick="copyToClipboard('#txt#{file.replace('.jpg' || '.png','')}')" style="margin-left:4px;") 
                       img(class="overlay-icon" src="/images/markdown.png"  style="height:30px;width:30px;") 
-                input(value="![file](https://img.tdevisscher.ca/images/#{team}/#{file})" id="txt#{file.replace('.jpg' || '.png','')}" hidden)
-                textarea(id="txthtml#{file.replace('.jpg' || '.png','')}" hidden) &lt;img src=&quot;https://img.tdevisscher.ca/images/#{team}/#{file}&quot; /&gt; 
+                input(value="![file](#{url}/#{team}/#{file})" id="txt#{file.replace('.jpg' || '.png','')}" hidden)
+                textarea(id="txthtml#{file.replace('.jpg' || '.png','')}" hidden) &lt;img src=&quot;#{url}#{team}/#{file}&quot; /&gt; 
                 script.
                   function copyToClipboard(element) {
                       var $temp = $('<input>');
@@ -46,6 +46,7 @@ block content
   footer
     .row
       .col-lg-12
-        p tdevisscher.ca 2016
+        p 
+          a(href="https://tdevisscher.ca") tdevisscher.ca 2016
   script(src='https://code.jquery.com/jquery-3.1.1.min.js')
 

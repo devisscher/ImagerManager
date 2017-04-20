@@ -1,17 +1,22 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var busboy = require("connect-busboy");
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var session = require('express-session')
-var app = express();
-var sess;
-app.use(session({ secret: 'ssshhhhh' }));
+const logger = require('morgan');
+cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    busboy = require("connect-busboy"),
+    dotenv = require('dotenv').config(),
+    routes = require('./routes/index'),
+    users = require('./routes/users'),
+    cookieSession = require('cookie-session'),
+    app = express();
+app.use(cookieSession({
+    name: 'session',
+    keys: ['c7a5daa1ddb589fc4436bd4798bdbf9b6bcb5ea59a966ae66d8f4d0eaa8ffa38bcd83cfb7a64972df1701667ab66dab2049b7d47ebcb319ffc9967028f61e569',
+        'f25dd9f619a578384f0905de5ddd91c1398484b1a3e00c7033a85a20990f4be517d2184687d110308320a60bc333509a0b398e579a3ec1b59ce4e8035d63b948'
+    ],
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours 
+}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
