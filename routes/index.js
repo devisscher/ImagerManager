@@ -185,6 +185,7 @@ router.post('/upload', function(req, res) {
                 });
             });
         }
+
     });
 });
 router.get('/image/:file_path', function(req, res, next) {
