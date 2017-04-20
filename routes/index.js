@@ -191,7 +191,7 @@ router.post('/upload', function(req, res) {
 router.get('/image/:file_path', function(req, res, next) {
     var myFile = req.params.file_path
     if (req.session.team) {
-        var file = '/image_uploads/' + req.session.team + '/' + myFile;
+        var file = process.env.URL + '/image_uploads/' + req.session.team + '/' + myFile;
         var img_path = '/image_uploads/' + req.session.team + '/' + myFile;
         console.log(req.session.id)
         res.render('image', {
