@@ -1,7 +1,7 @@
 public/images
 .DS_Store
 .vscode
-image_uploads/*
+public/image_uploads/*
 .env
 node_modules
 

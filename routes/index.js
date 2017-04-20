@@ -185,7 +185,6 @@ router.post('/upload', function(req, res) {
                 });
             });
         }
-
     });
 });
 router.get('/image/:file_path', function(req, res, next) {
@@ -207,14 +206,8 @@ router.get('/image/:file_path', function(req, res, next) {
 
 });
 router.get('/destroy_session', function(req, res, next) {
-    req.session.destroy(function(err) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect('/');
-        }
-    })
-
+    req.session = null;
+    res.redirect('/');
 });
 
 
